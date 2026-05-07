@@ -115,15 +115,14 @@ dependencyResolutionManagement {
 dependencies {
     // NapSSP 기본 SDK (필수)
     implementation("io.github.nasmedia-tech:admixer-ssp:1.0.23")
-    implementation("com.google.android.gms:play-services-ads-identifier:18.3.0")
+    implementation("com.google.android.gms:play-services-ads-identifier:18.9.0")
 
     // 미디에이션 어댑터 (사용하는 네트워크만 선택)
-    implementation("io.github.nasmedia-tech:admixer-admanager:1.0.15_delta")  // Google Ad Manager
-    implementation("io.github.nasmedia-tech:admixer-adfit:1.0.11")            // Kakao AdFit
-    implementation("io.github.nasmedia-tech:admixer-pangle:1.0.11")           // Pangle
-    implementation("com.pangle.global:pag-sdk:8.0.0.4")
-    implementation("io.github.nasmedia-tech:admixer-applovin:1.0.8")          // AppLovin
-    implementation("io.github.nasmedia-tech:admixer-unity:1.0.6")             // Unity Ads
+    implementation("io.github.nasmedia-tech:admixer-admanager:1.0.14")  // Google Ad Manager
+    implementation("io.github.nasmedia-tech:admixer-adfit:1.0.10")      // Kakao AdFit
+    implementation("io.github.nasmedia-tech:admixer-pangle:1.0.10")     // Pangle
+    implementation("io.github.nasmedia-tech:admixer-applovin:1.0.8")    // AppLovin
+    implementation("io.github.nasmedia-tech:admixer-unity:1.0.6")       // Unity Ads
 }
 ```
 
@@ -147,6 +146,23 @@ dependencies {
         android:name="com.google.android.gms.ads.APPLICATION_ID"
         android:value="YOUR_GOOGLE_MOBILE_ADS_APP_ID" />
 </application>
+```
+
+---
+
+### 4-2-1. ProGuard / R8 설정 (릴리즈 빌드 필수)
+
+릴리즈 빌드에서 광고가 동작하지 않는 경우 `proguard-rules.pro`에 아래 규칙을 추가합니다.
+
+```proguard
+-keep class com.nasmedia.admixerssp.** { *; }
+-keep class com.nasmedia.admanager.** { *; }
+-keep class com.nasmedia.adfit.** { *; }
+-keep class com.nasmedia.pangle.** { *; }
+-keep class com.nasmedia.applovin.** { *; }
+-keep class com.nasmedia.unity.** { *; }
+-keep class com.kakao.adfit.** { *; }
+-keep class com.google.android.gms.ads.** { *; }
 ```
 
 ---
@@ -742,19 +758,35 @@ iOS는 Swift Package Manager(SPM)로 설치합니다.
 **Xcode → File → Add Package Dependencies** 에서 아래 URL을 추가하거나,
 `Package.swift`에 직접 추가합니다.
 
-```swift
-// Package.swift 예시
-dependencies: [
-    .package(url: "https://github.com/Nasmedia-Tech/admixer-ios-spm", from: "1.1.6"),
-    .package(url: "https://github.com/Nasmedia-Tech/admixer-ios-mediation-spm", from: "2.3.3"),
-    // 미디에이션 어댑터 (사용하는 네트워크만 선택)
-    .package(url: "https://github.com/Nasmedia-Tech/admixer-ios-mediation-gam-spm", from: "1.0.8"),
-    .package(url: "https://github.com/Nasmedia-Tech/admixer-ios-mediation-adfit-spm", from: "1.0.7"),
-],
+```
+# Xcode → File → Add Package Dependencies 에서 아래 URL 추가
+
+# Core (필수)
+https://github.com/Nasmedia-Tech/iOS-SSP-SPM.git             최신: 1.1.5
+https://github.com/Nasmedia-Tech/iOS-SSP-Mediation-SPM.git   최신: 2.3.3
+
+# 미디에이션 어댑터 (사용하는 네트워크만 선택)
+https://github.com/Nasmedia-Tech/iOS-SSP-GAM-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AdFit-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-Pangle-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AppLovin-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-UnityAds-SPM.git
 ```
 
-> 패키지 URL은 Nasmedia에서 발급받은 정확한 주소를 사용하세요.
-> 내부 벤더 패키지를 사용하는 경우 `ios/Vendor/Packages/` 경로를 그대로 사용합니다.
+**또는 CocoaPods** (`Podfile`):
+
+```ruby
+platform :ios, '13.0'
+target 'YourApp' do
+  use_frameworks!
+  pod 'AdMixerMediation'
+  pod 'AdMixerMediationGAM'      # Google Ad Manager
+  pod 'AdMixerMediationAdFit'    # Kakao AdFit
+  pod 'AdMixerMediationPangle'   # Pangle
+  pod 'AdMixerMediationAppLovin' # AppLovin
+  pod 'AdMixerMediationUnityAds' # Unity Ads
+end
+```
 
 ---
 

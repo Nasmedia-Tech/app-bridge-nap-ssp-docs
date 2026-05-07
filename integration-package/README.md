@@ -49,24 +49,46 @@ integration-package/
 **Android** (`build.gradle.kts`):
 
 ```kotlin
-// settings.gradle.kts에 저장소 추가
+// settings.gradle.kts — AdFit/Pangle 미디에이션 사용 시 저장소 추가
 maven(url = "https://devrepo.kakao.com/nexus/content/groups/public/")
 maven(url = "https://artifact.bytedance.com/repository/pangle/")
 
-// 의존성
+// build.gradle.kts — 의존성
 implementation("io.github.nasmedia-tech:admixer-ssp:1.0.23")
-implementation("com.google.android.gms:play-services-ads-identifier:18.3.0")
+implementation("com.google.android.gms:play-services-ads-identifier:18.9.0")
 // 미디에이션 (사용하는 것만 선택)
-implementation("io.github.nasmedia-tech:admixer-admanager:1.0.15_delta")
-implementation("io.github.nasmedia-tech:admixer-adfit:1.0.11")
-implementation("io.github.nasmedia-tech:admixer-pangle:1.0.11")
-implementation("com.pangle.global:pag-sdk:8.0.0.4")
+implementation("io.github.nasmedia-tech:admixer-admanager:1.0.14")
+implementation("io.github.nasmedia-tech:admixer-adfit:1.0.10")
+implementation("io.github.nasmedia-tech:admixer-pangle:1.0.10")
 implementation("io.github.nasmedia-tech:admixer-applovin:1.0.8")
 implementation("io.github.nasmedia-tech:admixer-unity:1.0.6")
 ```
 
-**iOS** (SPM / Xcode):  
-Nasmedia에서 안내받은 SPM URL로 `AdMixer`, `AdMixerMediation` 패키지를 추가합니다.
+**iOS** (SPM — Xcode → File → Add Package Dependencies):
+
+```
+# Core (필수)
+https://github.com/Nasmedia-Tech/iOS-SSP-SPM.git           (최신: 1.1.5)
+https://github.com/Nasmedia-Tech/iOS-SSP-Mediation-SPM.git (최신: 2.3.3)
+
+# 미디에이션 어댑터 (필요한 것만 선택)
+https://github.com/Nasmedia-Tech/iOS-SSP-GAM-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AdFit-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-Pangle-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AppLovin-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-UnityAds-SPM.git
+```
+
+또는 CocoaPods (`Podfile`):
+
+```ruby
+pod 'AdMixerMediation'
+pod 'AdMixerMediationGAM'      # GAM 사용 시
+pod 'AdMixerMediationAdFit'    # AdFit 사용 시
+pod 'AdMixerMediationPangle'   # Pangle 사용 시
+pod 'AdMixerMediationAppLovin' # AppLovin 사용 시
+pod 'AdMixerMediationUnityAds' # Unity Ads 사용 시
+```
 
 ### 4단계 — AndroidManifest.xml 권한 추가
 

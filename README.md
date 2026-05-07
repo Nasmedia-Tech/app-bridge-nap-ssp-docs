@@ -97,22 +97,23 @@ integration-package/
 **1. `settings.gradle.kts`에 Maven 저장소 추가**
 
 ```kotlin
-maven { url = uri("https://repository.nasmedia.net/artifactory/admixer-android") }
+// AdFit / Pangle 미디에이션 사용 시 필요
 maven { url = uri("https://devrepo.kakao.com/nexus/content/groups/public/") }
-maven { url = uri("https://artifact.bytedance.com/repository/pangle") }
+maven { url = uri("https://artifact.bytedance.com/repository/pangle/") }
 ```
 
 **2. `build.gradle.kts`에 SDK 의존성 추가**
 
 ```kotlin
-implementation("io.github.nasmedia-tech:admixer:2.3.3")
-implementation("io.github.nasmedia-tech:admixer-mediation:2.3.3")
+// Core (필수)
+implementation("io.github.nasmedia-tech:admixer-ssp:1.0.23")
+implementation("com.google.android.gms:play-services-ads-identifier:18.9.0")
 // 미디에이션 어댑터 (사용할 것만 선택)
-implementation("io.github.nasmedia-tech:admixer-admanager:1.0.15_delta")
-implementation("io.github.nasmedia-tech:admixer-adfit:2.0.6")
-implementation("io.github.nasmedia-tech:admixer-pangle:0.2.10")
-implementation("io.github.nasmedia-tech:admixer-applovin:0.2.9")
-implementation("io.github.nasmedia-tech:admixer-unity:0.2.4")
+implementation("io.github.nasmedia-tech:admixer-admanager:1.0.14")
+implementation("io.github.nasmedia-tech:admixer-adfit:1.0.10")
+implementation("io.github.nasmedia-tech:admixer-pangle:1.0.10")
+implementation("io.github.nasmedia-tech:admixer-applovin:1.0.8")
+implementation("io.github.nasmedia-tech:admixer-unity:1.0.6")
 ```
 
 **3. `integration-package/android/` 파일 3개를 프로젝트에 복사**
@@ -133,15 +134,20 @@ const val PANGLE_APP_ID       = "YOUR_PANGLE_APP_ID"
 
 ## iOS 연동 요약
 
-**1. Xcode → Package Dependencies에 AdMixer SPM 패키지 추가**
+**1. Xcode → Package Dependencies에 NapSSP SPM 패키지 추가**
 
 ```
-https://github.com/nasmedia-tech/AdMixer-SPM
-https://github.com/nasmedia-tech/AdMixerMediation-SPM
-// 미디에이션 어댑터 (사용할 것만 선택)
-https://github.com/nasmedia-tech/AdMixerMediationGAM-SPM
-https://github.com/nasmedia-tech/adfit-spm
-https://github.com/nasmedia-tech/AdMixerMediationPangle-SPM
+# Core (필수)
+https://github.com/Nasmedia-Tech/iOS-SSP-SPM.git           (최신: 1.1.5)
+https://github.com/Nasmedia-Tech/iOS-SSP-Mediation-SPM.git (최신: 2.3.3)
+
+# 미디에이션 어댑터 (CocoaPods 사용 시 Podfile에 추가)
+pod 'AdMixerMediation'
+pod 'AdMixerMediationGAM'
+pod 'AdMixerMediationAdFit'
+pod 'AdMixerMediationPangle'
+pod 'AdMixerMediationAppLovin'
+pod 'AdMixerMediationUnityAds'
 ```
 
 **2. `Info.plist`에 필수 키 추가**
@@ -149,8 +155,12 @@ https://github.com/nasmedia-tech/AdMixerMediationPangle-SPM
 ```xml
 <key>NSAppTransportSecurity</key>
 <dict><key>NSAllowsArbitraryLoads</key><true/></dict>
+<!-- GAM 사용 시 -->
 <key>GADApplicationIdentifier</key>
 <string>ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX</string>
+<!-- ATT (iOS 14.5+) -->
+<key>NSUserTrackingUsageDescription</key>
+<string>맞춤 광고 제공을 위해 광고 추적 권한이 필요합니다.</string>
 ```
 
 **3. `integration-package/ios/` 파일들을 프로젝트에 추가**
