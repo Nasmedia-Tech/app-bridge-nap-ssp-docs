@@ -85,7 +85,7 @@
 |---|---|
 | `MEDIA_KEY` | Nasmedia에서 발급받은 매체 키. 예: `10771` |
 | `AD_UNIT_ID` | 광고 단위 ID. 포맷마다 다릅니다. 예: `104704` |
-| Android 개발 환경 | JDK 17, Android Studio, `minSdk 24` 이상 |
+| Android 개발 환경 | JDK 17, Android Studio, `minSdk 21` 이상 |
 | iOS 개발 환경 | macOS, Xcode 15.3 이상, `iOS 14.0` 이상 |
 
 > 아직 키가 없다면 샘플 기본값(`MEDIA_KEY: 10771`)으로 먼저 동작을 확인할 수 있습니다.
@@ -805,6 +805,36 @@ end
 ---
 
 ### 5-3. SDK 초기화 코드
+
+**`AppDelegate.swift`** — 미디에이션 어댑터 개별 초기화 (Pangle / AppLovin 사용 시)
+
+Pangle과 AppLovin은 NapSSP SDK와 별도로 앱 시작 시 초기화가 필요합니다.
+
+```swift
+import UIKit
+import PAGAdSDK        // Pangle 사용 시
+import AppLovinSDK     // AppLovin 사용 시
+
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        // Pangle 초기화 (사용하지 않으면 이 블록 삭제)
+        let pagConfig = PAGConfig.share()
+        pagConfig.appID = "YOUR_PANGLE_APP_ID"  // TODO: Pangle 콘솔에서 발급받은 App ID로 교체
+        PAGSdk.start(with: pagConfig) { isSuccess, error in }
+
+        // AppLovin 초기화 (사용하지 않으면 이 블록 삭제)
+        let alConfig = ALSdkInitializationConfiguration(sdkKey: "YOUR_APPLOVIN_SDK_KEY")  // TODO: AppLovin 대시보드 SDK Key로 교체
+        ALSdk.shared().initialize(with: alConfig) { _ in }
+
+        return true
+    }
+}
+```
+
+---
 
 **`NapSspConfig.swift`** — 키 설정
 

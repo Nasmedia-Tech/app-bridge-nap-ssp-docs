@@ -134,20 +134,34 @@ const val PANGLE_APP_ID       = "YOUR_PANGLE_APP_ID"
 
 ## iOS 연동 요약
 
-**1. Xcode → Package Dependencies에 NapSSP SPM 패키지 추가**
+**1-A. SPM 방식** — Xcode → File → Add Package Dependencies
 
 ```
 # Core (필수)
 https://github.com/Nasmedia-Tech/iOS-SSP-SPM.git           (최신: 1.1.5)
 https://github.com/Nasmedia-Tech/iOS-SSP-Mediation-SPM.git (최신: 2.3.3)
 
-# 미디에이션 어댑터 (CocoaPods 사용 시 Podfile에 추가)
-pod 'AdMixerMediation'
-pod 'AdMixerMediationGAM'
-pod 'AdMixerMediationAdFit'
-pod 'AdMixerMediationPangle'
-pod 'AdMixerMediationAppLovin'
-pod 'AdMixerMediationUnityAds'
+# 미디에이션 어댑터 (사용할 것만 선택)
+https://github.com/Nasmedia-Tech/iOS-SSP-GAM-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AdFit-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-Pangle-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-AppLovin-SPM.git
+https://github.com/Nasmedia-Tech/iOS-SSP-UnityAds-SPM.git
+```
+
+**1-B. CocoaPods 방식** — `Podfile`
+
+```ruby
+platform :ios, '13.0'
+target 'YourApp' do
+  use_frameworks!
+  pod 'AdMixerMediation'
+  pod 'AdMixerMediationGAM'       # GAM 사용 시
+  pod 'AdMixerMediationAdFit'     # AdFit 사용 시
+  pod 'AdMixerMediationPangle'    # Pangle 사용 시
+  pod 'AdMixerMediationAppLovin'  # AppLovin 사용 시
+  pod 'AdMixerMediationUnityAds'  # Unity Ads 사용 시
+end
 ```
 
 **2. `Info.plist`에 필수 키 추가**

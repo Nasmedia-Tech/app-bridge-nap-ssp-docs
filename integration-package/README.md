@@ -93,12 +93,17 @@ pod 'AdMixerMediationUnityAds' # Unity Ads 사용 시
 ### 4단계 — AndroidManifest.xml 권한 추가
 
 ```xml
+<!-- <manifest> 바로 아래 -->
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-<meta-data
-    android:name="com.google.android.gms.ads.APPLICATION_ID"
-    android:value="YOUR_GOOGLE_MOBILE_ADS_APP_ID" />
+
+<!-- <application> 태그 안에 -->
+<application ...>
+    <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="YOUR_GOOGLE_MOBILE_ADS_APP_ID" />
+</application>
 ```
 
 ### 5단계 — WebView 화면 표시
@@ -117,7 +122,7 @@ HybridWebViewScreen()
 
 ## 자세한 연동 가이드
 
-`docs/gitbook-hybrid-bridge-guide.md`를 참고하세요.
+루트의 `guide.md`를 참고하세요.
 
 ## 문의
 
