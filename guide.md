@@ -174,7 +174,7 @@ dependencies {
 **`NapSspConfig.kt`** — 키 설정
 
 ```kotlin
-package com.yourapp.bridge
+package com.yourapp // TODO: 실제 패키지명으로 변경
 
 object NapSspConfig {
     // 실제 키로 교체하세요. 소스 코드에 직접 커밋하지 말고 BuildConfig나 서버 설정으로 주입하세요.
@@ -196,7 +196,7 @@ object NapSspConfig {
 **`NapSspSdkIntegration.kt`** — SDK 연동 엔진
 
 ```kotlin
-package com.yourapp.bridge
+package com.yourapp // TODO: 실제 패키지명으로 변경
 
 import android.content.Context
 import android.util.Log
@@ -286,6 +286,9 @@ object NapSspSdkIntegration {
 
     // ─────────────────────────────────────────
     // 네이티브 광고 (layout 파일 필요)
+    // TODO: res/layout/admixer_item_320x480.xml 파일을 프로젝트에 직접 생성하세요.
+    //       iv_icon / tv_title / tv_adv / tv_desc / iv_main / btn_cta View ID 포함 필요.
+    //       네이티브 광고를 사용하지 않는다면 이 메서드 전체를 삭제해도 됩니다.
     // ─────────────────────────────────────────
 
     @Synchronized
@@ -294,7 +297,7 @@ object NapSspSdkIntegration {
         destroyAndRemoveAd("native")
         return runCatching {
             val nativeView = NativeAdView(context)
-            val layoutId = R.layout.admixer_item_320x480   // 프로젝트 layout ID에 맞게 수정
+            val layoutId = R.layout.admixer_item_320x480   // 위 TODO에서 생성한 layout 파일명으로 교체
             val adViewIds = mapOf(
                 "nativeLayout" to layoutId,
                 "iv_icon" to R.id.iv_icon,
@@ -797,6 +800,11 @@ end
 <key>NSUserTrackingUsageDescription</key>
 <string>맞춤형 광고 제공을 위해 기기 식별자를 사용합니다.</string>
 
+<!-- ATS: 광고 SDK가 HTTP 엔드포인트를 사용하는 경우 필요 -->
+<!-- ⚠️ 운영 앱에서는 NSAllowsArbitraryLoads 대신 특정 도메인만 허용하는 NSExceptionDomains 사용 권장 -->
+<key>NSAppTransportSecurity</key>
+<dict><key>NSAllowsArbitraryLoads</key><true/></dict>
+
 <!-- Google Mobile Ads 사용 시 (운영 ID로 교체) -->
 <key>GADApplicationIdentifier</key>
 <string>YOUR_GOOGLE_MOBILE_ADS_APP_ID</string>
@@ -901,6 +909,9 @@ class NapSspSdkIntegration: NSObject {
 
     // ─────────────────────────────────────────
     // 네이티브 광고 (AMMNativeAdView.xib 필요)
+    // TODO: Xcode에서 File → New → View (xib) 생성 후
+    //       Custom Class를 AMMNativeAdView로 지정하고,
+    //       headlineView / mediaView / iconView / bodyView / callToActionView outlet 연결
     // ─────────────────────────────────────────
 
     static func native(rootVC: UIViewController, customAdUnitId: Int? = nil) -> UIView? {
@@ -932,18 +943,19 @@ class NapSspSdkIntegration: NSObject {
     }
 
     // ─────────────────────────────────────────
-    // 보상형 광고 (전체화면)
+    // 보상형 광고 (전체화면) — RewardedModule 위임
     // ─────────────────────────────────────────
 
     static func rewardVideo(rootVC: UIViewController, customAdUnitId: Int? = nil) {
         let adUnitId = customAdUnitId ?? NapSspConfig.adUnitID("reward_video")
         shared.destroyAndRemoveAd(format: "rewardVideo")
-        AMMRewardVideo.load(adUnitID: adUnitId) { reward, error in
+        // RewardedModule: customParam(유저 식별값) 설정 포함. Bridge/RewardedModule.swift 참고
+        RewardedModule.shared.load(adUnitId: adUnitId) { reward, error in
             if let reward = reward {
                 reward.delegate = shared
                 shared.activeAds["rewardVideo"] = reward
                 shared.onAdEventCallback?("loaded", "rewardVideo", String(adUnitId))
-                reward.show(rootViewController: rootVC)
+                RewardedModule.shared.show(reward, rootViewController: rootVC)
             } else {
                 shared.onAdEventCallback?("failed", "rewardVideo", error?.localizedDescription ?? "load failed")
             }
@@ -970,18 +982,19 @@ class NapSspSdkIntegration: NSObject {
     }
 
     // ─────────────────────────────────────────
-    // 전면 배너/팝업 광고 (전체화면)
+    // 전면 배너/팝업 광고 (전체화면) — InterstitialModule 위임
     // ─────────────────────────────────────────
 
     static func interstitialBanner(rootVC: UIViewController, customAdUnitId: Int? = nil) {
         let adUnitId = customAdUnitId ?? NapSspConfig.adUnitID("interstitial_320x480_f")
         shared.destroyAndRemoveAd(format: "interstitialBanner")
-        AMMInterstitial.load(adUnitID: adUnitId) { interstitial, error in
+        // InterstitialModule: 팝업 버튼/카운트다운 옵션 설정 포함. Bridge/InterstitialModule.swift 참고
+        InterstitialModule.shared.load(adUnitId: adUnitId) { interstitial, error in
             if let interstitial = interstitial {
                 interstitial.delegate = shared
                 shared.activeAds["interstitialBanner"] = interstitial
                 shared.onAdEventCallback?("loaded", "interstitialBanner", String(adUnitId))
-                interstitial.show(rootViewController: rootVC)
+                InterstitialModule.shared.show(interstitial, rootViewController: rootVC)
             } else {
                 shared.onAdEventCallback?("failed", "interstitialBanner", error?.localizedDescription ?? "load failed")
             }

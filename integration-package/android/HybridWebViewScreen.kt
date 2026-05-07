@@ -87,7 +87,6 @@ class NapSspHybridBridge(
                 "clearAds" -> {
                     webView.post {
                         onAdRequest("clear", null)
-                        NapSspSdkIntegration.clearAllAds()
                         sendResponse("clearAds", "success", "All ads cleared")
                     }
                 }

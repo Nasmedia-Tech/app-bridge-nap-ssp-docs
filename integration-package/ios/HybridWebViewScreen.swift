@@ -186,7 +186,7 @@ struct HybridWebViewScreen: View {
                         self.adViewId = UUID()
                         // 타입별 높이 보정
                         if view is AMMBannerView                { self.adHeight = 100 }
-                        else if view is AMMNativeAdViewContainer { self.adHeight = 350 }
+                        else if view is AMMNativeAdViewContainer { self.adHeight = 400 }
                         else if view is AMMVideoView             { self.adHeight = 250 }
                         else                                     { self.adHeight = 0 }
                     }
