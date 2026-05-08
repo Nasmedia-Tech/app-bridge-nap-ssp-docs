@@ -1414,14 +1414,41 @@ function handleAdEvent(data) {
 
 ### JS에서 사용할 수 있는 모든 포맷
 
-| format 값 | 광고 종류 | 표시 방식 | 화면 높이 |
+| format 값 | 광고 종류 | 표시 방식 | 기본 높이 |
 |---|---|---|---|
-| `banner` | 배너 (320×100) | WebView 하단 Native 영역 | 100dp / pt |
+| `banner` | 배너 (기본 320×100) | WebView 하단 Native 영역 | 100dp / pt |
 | `native` | 네이티브 | WebView 하단 Native 영역 | 350~400dp / pt |
 | `video` | 아웃스트림 비디오 | WebView 하단 Native 영역 | 250dp / pt |
 | `rewardVideo` | 보상형 비디오 | 전체화면 (SDK 자동 표시) | — |
 | `interstitialVideo` | 전면 비디오 | 전체화면 (SDK 자동 표시) | — |
 | `interstitialBanner` | 전면 배너/팝업 | 전체화면 (SDK 자동 표시) | — |
+
+#### 배너 비표준 사이즈 (NaverAdManager / Kakao AdFit)
+
+NaverAdManager(NAM)와 Kakao AdFit 어댑터는 360×230, 360×210 비표준 사이즈를 지원합니다.  
+NapSSP SDK는 배너 사이즈를 **Ad Unit ID 기준**으로 결정하므로, 해당 사이즈 광고를 사용하려면 두 가지가 필요합니다.
+
+1. **해당 사이즈 전용 Ad Unit ID 발급** — 파트너 사이트에서 사이즈별로 별도 발급
+2. **Native 컨테이너 높이 조정** — `size` 파라미터를 활용해 동적으로 설정
+
+```javascript
+// loadAd 호출 시 size 파라미터 추가
+callNative('loadAd', {
+  format: 'banner',
+  adUnitId: '발급받은_360x230_AD_UNIT_ID',
+  size: '360x230'  // Native에서 컨테이너 높이 결정에 사용
+});
+```
+
+| size 파라미터 | 사이즈 | 권장 컨테이너 높이 | 지원 어댑터 |
+|---|---|---|---|
+| `320x50` | 320 × 50 | 50dp / pt | 공통 |
+| `320x100` | 320 × 100 | 100dp / pt | 공통 (기본값) |
+| `300x250` | 300 × 250 | 250dp / pt | 공통 |
+| `360x230` | 360 × 230 | 230dp / pt | NaverAdManager (NAM) |
+| `360x210` | 360 × 210 | 210dp / pt | Kakao AdFit |
+
+> Native 구현 시 `params.size` 값을 수신하여 컨테이너 높이를 동적으로 설정하세요.
 
 ### 커스텀 Ad Unit ID 전달
 
