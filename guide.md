@@ -1454,7 +1454,7 @@ containerHeight = h
 
 이 방식의 장점: **신규 사이즈가 추가돼도 Native 코드 변경 없음.** JS에서 `size` 값만 바꾸면 어떤 사이즈도 자동 처리됩니다.
 
-> NaverAdManager는 360×230, Kakao AdFit은 360×210 사이즈를 해당 어댑터 전용으로 지원합니다. 각 사이즈는 파트너 사이트에서 사이즈별 Ad Unit ID를 별도 발급받아야 합니다.
+> 360×230 / 360×210은 NaverAdManager, Kakao AdFit에서 지원하는 사이즈입니다. 각 사이즈는 파트너 사이트에서 사이즈별 Ad Unit ID를 별도 발급받아야 합니다.
 
 ### 커스텀 Ad Unit ID 전달
 
