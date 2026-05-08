@@ -1423,32 +1423,38 @@ function handleAdEvent(data) {
 | `interstitialVideo` | 전면 비디오 | 전체화면 (SDK 자동 표시) | — |
 | `interstitialBanner` | 전면 배너/팝업 | 전체화면 (SDK 자동 표시) | — |
 
-#### 배너 비표준 사이즈 (NaverAdManager / Kakao AdFit)
+#### 배너 사이즈 — 하드코딩 없이 동적 처리
 
-NaverAdManager(NAM)와 Kakao AdFit 어댑터는 360×230, 360×210 비표준 사이즈를 지원합니다.  
-NapSSP SDK는 배너 사이즈를 **Ad Unit ID 기준**으로 결정하므로, 해당 사이즈 광고를 사용하려면 두 가지가 필요합니다.
+NapSSP SDK는 배너 사이즈를 **Ad Unit ID 기준으로 서버에서 결정**합니다. Native 코드에 사이즈를 하드코딩할 필요가 없습니다. 필요한 것은 컨테이너 높이를 올바르게 설정하는 것뿐입니다.
 
-1. **해당 사이즈 전용 Ad Unit ID 발급** — 파트너 사이트에서 사이즈별로 별도 발급
-2. **Native 컨테이너 높이 조정** — `size` 파라미터를 활용해 동적으로 설정
+**권장 방식: `size` 파라미터를 `"WxH"` 문자열로 전달 → Native에서 파싱**
 
 ```javascript
-// loadAd 호출 시 size 파라미터 추가
+// JS: 사이즈를 "가로x세로" 형식으로 전달
 callNative('loadAd', {
   format: 'banner',
-  adUnitId: '발급받은_360x230_AD_UNIT_ID',
-  size: '360x230'  // Native에서 컨테이너 높이 결정에 사용
+  adUnitId: '발급받은_해당_사이즈_AD_UNIT_ID',
+  size: '360x230'   // 새 사이즈 추가 시 코드 변경 없음
 });
 ```
 
-| size 파라미터 | 사이즈 | 권장 컨테이너 높이 | 지원 어댑터 |
-|---|---|---|---|
-| `320x50` | 320 × 50 | 50dp / pt | 공통 |
-| `320x100` | 320 × 100 | 100dp / pt | 공통 (기본값) |
-| `300x250` | 300 × 250 | 250dp / pt | 공통 |
-| `360x230` | 360 × 230 | 230dp / pt | NaverAdManager (NAM) |
-| `360x210` | 360 × 210 | 210dp / pt | Kakao AdFit |
+Native는 `size` 문자열에서 높이만 파싱해 컨테이너에 적용합니다.
 
-> Native 구현 시 `params.size` 값을 수신하여 컨테이너 높이를 동적으로 설정하세요.
+```kotlin
+// Android (Kotlin)
+val h = params.optString("size").split("x").getOrNull(1)?.toIntOrNull() ?: 100
+adHeight = h.dp
+```
+
+```swift
+// iOS (Swift)
+let h = size?.split(separator: "x").last.flatMap { Int($0) }.map { CGFloat($0) } ?? 100
+containerHeight = h
+```
+
+이 방식의 장점: **신규 사이즈가 추가돼도 Native 코드 변경 없음.** JS에서 `size` 값만 바꾸면 어떤 사이즈도 자동 처리됩니다.
+
+> NaverAdManager는 360×230, Kakao AdFit은 360×210 사이즈를 해당 어댑터 전용으로 지원합니다. 각 사이즈는 파트너 사이트에서 사이즈별 Ad Unit ID를 별도 발급받아야 합니다.
 
 ### 커스텀 Ad Unit ID 전달
 
