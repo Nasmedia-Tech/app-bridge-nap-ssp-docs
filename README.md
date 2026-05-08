@@ -51,7 +51,7 @@ val h = params.optString("size").split("x").getOrNull(1)?.toIntOrNull() ?: 100
 adHeight = h.dp
 ```
 
-> NaverAdManager는 360×230, Kakao AdFit은 360×210 사이즈를 해당 어댑터 전용으로 지원합니다. 각 사이즈별 전용 Ad Unit ID를 파트너 사이트에서 별도 발급받으세요.
+> 360×230 / 360×210은 NaverAdManager, Kakao AdFit에서 지원하는 사이즈입니다. 각 사이즈별 전용 Ad Unit ID를 파트너 사이트에서 별도 발급받으세요.
 
 ---
 
