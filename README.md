@@ -152,7 +152,7 @@ https://github.com/Nasmedia-Tech/iOS-SSP-UnityAds-SPM.git
 **1-B. CocoaPods 방식** — `Podfile`
 
 ```ruby
-platform :ios, '13.0'
+platform :ios, '14.0'
 target 'YourApp' do
   use_frameworks!
   pod 'AdMixerMediation'
