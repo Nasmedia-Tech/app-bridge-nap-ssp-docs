@@ -26,12 +26,33 @@
 
 | 포맷 | 설명 |
 |---|---|
-| `banner` | 배너 광고 (하단 고정) |
+| `banner` | 배너 광고 (기본 320×100, size 파라미터로 변경 가능) |
 | `native` | 네이티브 광고 |
 | `video` | 인스트림 비디오 |
 | `rewardVideo` | 보상형 비디오 |
 | `interstitialVideo` | 전면 비디오 |
 | `interstitialBanner` | 전면 배너 |
+
+#### 배너 비표준 사이즈 (NaverAdManager / Kakao AdFit)
+
+NaverAdManager(NAM)와 Kakao AdFit은 360×230, 360×210 사이즈를 지원합니다.  
+`loadAd` 호출 시 `size` 파라미터를 추가하고, 해당 사이즈 전용 Ad Unit ID를 전달하세요.
+
+```js
+NapSspBridge.loadAd('banner', '발급받은_360x230_AD_UNIT_ID', '360x230');
+// 또는
+callNative('loadAd', { format: 'banner', adUnitId: '...', size: '360x230' });
+```
+
+| size | 사이즈 | 높이 | 지원 어댑터 |
+|---|---|---|---|
+| `320x50` | 320 × 50 | 50dp/pt | 공통 |
+| `320x100` | 320 × 100 | 100dp/pt | 공통 (기본값) |
+| `300x250` | 300 × 250 | 250dp/pt | 공통 |
+| `360x230` | 360 × 230 | 230dp/pt | NaverAdManager (NAM) |
+| `360x210` | 360 × 210 | 210dp/pt | Kakao AdFit |
+
+> Native에서 `size` 파라미터를 받아 컨테이너 높이를 동적으로 설정해야 합니다.
 
 ---
 
@@ -152,7 +173,7 @@ https://github.com/Nasmedia-Tech/iOS-SSP-UnityAds-SPM.git
 **1-B. CocoaPods 방식** — `Podfile`
 
 ```ruby
-platform :ios, '14.0'
+platform :ios, '13.0'
 target 'YourApp' do
   use_frameworks!
   pod 'AdMixerMediation'
